@@ -1,4 +1,4 @@
-# myapp
+# My rally course creator
 
 A new Flutter project.
 

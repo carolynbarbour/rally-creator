@@ -1,29 +1,15 @@
-import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:myapp/image_state.dart';
-import 'dart:math' as math;
-import 'package:vector_math/vector_math_64.dart' as vector;
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 part 'providers.g.dart';
 
 const double initialImageSize = 150.0;
-
-final generativeModelProvider = Provider<GenerativeModel>((ref) {
-  final apiKey = dotenv.env['GEMINI_API_KEY'];
-  if (apiKey == null) {
-    throw Exception('GEMINI_API_KEY not found in .env file');
-  }
-  return GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
-});
 
 final databaseProvider = Provider<FirebaseDatabase>((ref) {
   return FirebaseDatabase.instance;
@@ -178,69 +164,16 @@ List<String> _getImageListForLevel(int level) {
 
 @riverpod
 Future<List<ImageAsset>> imageAssetsForLevel(ref, int level) async {
-  final db = ref.read(databaseProvider);
   final imageList = _getImageListForLevel(level);
-  final cacheRef = db.ref('imageNameCache');
-
-  final snapshot = await cacheRef.once();
-  final cache = (snapshot.snapshot.value as Map? ?? {}).cast<String, String>();
-
   final assets = <ImageAsset>[];
-  final assetsToFetch = <String>[];
-
   for (final assetPath in imageList) {
-    final sanitizedPath = assetPath.replaceAll('.', '_');
-    if (cache.containsKey(sanitizedPath)) {
-      assets.add(ImageAsset(assetPath: assetPath, name: cache[sanitizedPath]!));
-    } else {
-      assetsToFetch.add(assetPath);
-    }
+    final name = assetPath.split('/').last.replaceAll('.jpg', '');
+    assets.add(ImageAsset(assetPath: assetPath, name: name));
   }
-
-  if (assetsToFetch.isNotEmpty) {
-    final generativeModel = ref.read(generativeModelProvider);
-    final parts = <Part>[];
-
-    parts.add(
-      TextPart(
-        'You are an expert at reading text from images, even if it is rotated or hard to read. For each image provided, return only the text content, without any formatting, numbering, or extra characters. On images that have an additional "a" or "b" after the number in the filename, the first line of text includes a black section of text and a light grey section, only the text in black should be the one returned. Provide the response as a JSON object where the key is the image filename and the value is the extracted text.',
-      ),
-    );
-
-    final assetPathsToLoad = assetsToFetch
-        .map((e) => e.replaceAll('.jpg', '_back.jpg'))
-        .toList();
-
-    for (final assetPath in assetPathsToLoad) {
-      try {
-        final data = await rootBundle.load(assetPath);
-        parts.add(DataPart('image/jpeg', data.buffer.asUint8List()));
-      } catch (e) {
-        if (kDebugMode) {
-          print('Could not load image $assetPath');
-        }
-      }
-    }
-
-    final response = await generativeModel.generateContent([
-      Content.multi(parts),
-    ]);
-    final newNames = json.decode(response.text!) as Map<String, dynamic>;
-
-    final Map<String, String> updates = {};
-    for (final assetPath in assetsToFetch) {
-      final name =
-          newNames[assetPath.split('/').last] ?? assetPath.split('/').last;
-      assets.add(ImageAsset(assetPath: assetPath, name: name));
-      updates[assetPath.replaceAll('.', '_')] = name;
-    }
-    await cacheRef.update(updates);
-  }
-
   return assets;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Level extends _$Level {
   @override
   int build() => 0;
@@ -250,7 +183,7 @@ class Level extends _$Level {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class GridDimensions extends _$GridDimensions {
   @override
   Size build() => const Size(10, 10);
@@ -305,6 +238,17 @@ class PlacedImages extends _$PlacedImages {
     state = [...state, newImage];
   }
 
+  void applyGestureUpdate(String id, Matrix4 translationDelta, Matrix4 scaleDelta, Matrix4 rotationDelta) {
+    _addToHistory();
+    state = [
+      for (final image in state)
+        if (image.id == id) 
+          image.copyWith(matrix: translationDelta * rotationDelta * scaleDelta * image.matrix)
+        else
+          image,
+    ];
+  }
+
   void updateImageMatrix(String id, Matrix4 matrix) {
     _addToHistory();
     state = [
@@ -322,20 +266,44 @@ class PlacedImages extends _$PlacedImages {
 
     state = state.map((image) {
       if (image.id == selectedId) {
-        // The center of the image in its local coordinates
-        final localCenter = vector.Vector3(
-          initialImageSize / 2,
-          initialImageSize / 2,
-          0,
+        final translation = vector.Vector3.zero();
+        final rotation = vector.Quaternion.identity();
+        final scale = vector.Vector3.zero();
+        image.matrix.decompose(translation, rotation, scale);
+
+        final rotationUpdate = vector.Quaternion.axisAngle(
+          vector.Vector3(0, 0, 1),
+          angle,
         );
+        final newRotation = rotation * rotationUpdate;
 
-        // Create a rotation matrix that rotates around the local center
-        final rotationUpdate = Matrix4.identity()
-          ..translateByVector3(localCenter)
-          ..rotateZ(angle)
-          ..translateByVector3(-localCenter);
+        final newMatrix = Matrix4.compose(translation, newRotation, scale);
 
-        return image.copyWith(matrix: image.matrix.multiplied(rotationUpdate));
+        return image.copyWith(matrix: newMatrix);
+      } else {
+        return image;
+      }
+    }).toList();
+  }
+
+  void scaleSelectedImage({required double scaleFactor}) {
+    final selectedId = ref.read(selectedImageIdProvider);
+    if (selectedId == null) return;
+
+    _addToHistory();
+
+    state = state.map((image) {
+      if (image.id == selectedId) {
+        final translation = vector.Vector3.zero();
+        final rotation = vector.Quaternion.identity();
+        final scale = vector.Vector3.zero();
+        image.matrix.decompose(translation, rotation, scale);
+
+        scale.scale(scaleFactor);
+
+        final newMatrix = Matrix4.compose(translation, rotation, scale);
+
+        return image.copyWith(matrix: newMatrix);
       } else {
         return image;
       }

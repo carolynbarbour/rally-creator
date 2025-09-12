@@ -8,34 +8,27 @@ class ImageSelectionDrawer extends ConsumerWidget {
   const ImageSelectionDrawer({super.key, required this.center});
 
   Widget _buildImageList(WidgetRef ref, BuildContext context, int level) {
-    final imageListProvider = imageAssetsForLevelProvider(level);
-    final imageList = ref.watch(imageListProvider);
+    final imageList = ref.watch(imageAssetsForLevelProvider(level));
 
-    return imageList.when(
-      data: (images) {
-        return ListView.builder(
-          itemCount: images.length,
-          itemBuilder: (context, index) {
-            final image = images[index];
-            return ListTile(
-              leading: Image.asset(
-                image.assetPath,
-                scale: 0.5,
-                fit: BoxFit.cover,
-              ),
-              title: Text(image.name),
-              onTap: () {
-                ref
-                    .read(placedImagesProvider.notifier)
-                    .addImage(image.assetPath, image.name, center);
-                Navigator.pop(context); // Close the drawer
-              },
-            );
+    return ListView.builder(
+      itemCount: imageList.asData?.value.length ?? 0,
+      itemBuilder: (context, index) {
+        final image = imageList.asData!.value[index];
+        return ListTile(
+          leading: Image.asset(
+            image.assetPath,
+            scale: 0.5,
+            fit: BoxFit.cover,
+          ),
+          title: Text(image.name),
+          onTap: () {
+            ref
+                .read(placedImagesProvider.notifier)
+                .addImage(image.assetPath, image.name, center);
+            Navigator.pop(context); // Close the drawer
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('Error: $error')),
     );
   }
 

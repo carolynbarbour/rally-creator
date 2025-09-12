@@ -65,7 +65,7 @@ final class ImageAssetsForLevelProvider
 }
 
 String _$imageAssetsForLevelHash() =>
-    r'95fc2594df831453ffba4cb92a555fd72a1e6b29';
+    r'2a15cd1062b170968962b7a2806881d0137252e3';
 
 final class ImageAssetsForLevelFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<List<ImageAsset>>, int> {
@@ -95,7 +95,7 @@ final class LevelProvider extends $NotifierProvider<Level, int> {
         argument: null,
         retry: null,
         name: r'levelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -116,7 +116,7 @@ final class LevelProvider extends $NotifierProvider<Level, int> {
   }
 }
 
-String _$levelHash() => r'b7c6df9200aab76832f702cdcdd58052dbb68eed';
+String _$levelHash() => r'ce826910216116c504f5ee6221b1961eb2cf478c';
 
 abstract class _$Level extends $Notifier<int> {
   int build();
@@ -148,7 +148,7 @@ final class GridDimensionsProvider
         argument: null,
         retry: null,
         name: r'gridDimensionsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -169,7 +169,7 @@ final class GridDimensionsProvider
   }
 }
 
-String _$gridDimensionsHash() => r'f6157bdb8b6adb1f678531a05944b4ad923c2279';
+String _$gridDimensionsHash() => r'35fc0e18c1d730c4cb9c11c04592f0ffcab8a9a4';
 
 abstract class _$GridDimensions extends $Notifier<Size> {
   Size build();
@@ -276,7 +276,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'036387e3018e41489e30eb0845bfd7217dddb4a8';
+String _$placedImagesHash() => r'b857f129dc5e2b3d28c6d24710f94949558e9944';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();

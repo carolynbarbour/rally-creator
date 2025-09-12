@@ -14,6 +14,12 @@ class ImageState {
     required this.matrix,
   });
 
+  bool get isCounted {
+    return !name.contains('start') &&
+        !name.contains('finish') &&
+        !name.contains('bonus');
+  }
+
   ImageState copyWith({
     String? id,
     String? assetPath,

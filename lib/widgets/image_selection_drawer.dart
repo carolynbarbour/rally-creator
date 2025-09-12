@@ -7,51 +7,64 @@ class ImageSelectionDrawer extends ConsumerWidget {
 
   const ImageSelectionDrawer({super.key, required this.center});
 
+  Widget _buildImageList(WidgetRef ref, BuildContext context, int level) {
+    final imageListProvider = imageAssetsForLevelProvider(level);
+    final imageList = ref.watch(imageListProvider);
+
+    return imageList.when(
+      data: (images) {
+        return ListView.builder(
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            final image = images[index];
+            return ListTile(
+              leading: Image.asset(
+                image.assetPath,
+                scale: 0.5,
+                fit: BoxFit.cover,
+              ),
+              title: Text(image.name),
+              onTap: () {
+                ref
+                    .read(placedImagesProvider.notifier)
+                    .addImage(image.assetPath, image.name, center);
+                Navigator.pop(context); // Close the drawer
+              },
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stackTrace) => Center(child: Text('Error: $error')),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final int currentLevel = ref.watch(levelProvider);
+
     return Drawer(
       child: DefaultTabController(
-        length: 6,
+        initialIndex: currentLevel,
+        length: 7, // "Base" + 6 levels
         child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
               isScrollable: true,
-              tabs: List.generate(
-                6,
-                (index) => Tab(text: 'Level ${index + 1}'),
-              ),
+              tabs: [
+                const Tab(text: 'Base'),
+                ...List.generate(6, (index) => Tab(text: 'Level ${index + 1}')),
+              ],
               onTap: (index) {
-                ref.read(levelProvider.notifier).setLevel(index + 1);
+                ref.read(levelProvider.notifier).setLevel(index);
               },
             ),
             title: const Text('Levels'),
             automaticallyImplyLeading: false,
           ),
           body: TabBarView(
-            children: List.generate(6, (levelIndex) {
-              return ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  final imageIndex = (levelIndex * 10) + index;
-                  final imageUrl =
-                      'https://picsum.photos/150/150?random=$imageIndex';
-                  return ListTile(
-                    leading: Image.network(
-                      imageUrl,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text('Image $index'),
-                    onTap: () {
-                      ref
-                          .read(placedImagesProvider.notifier)
-                          .addImage(imageUrl, center);
-                      Navigator.pop(context); // Close the drawer
-                    },
-                  );
-                },
-              );
+            children: List.generate(7, (index) {
+              return _buildImageList(ref, context, index);
             }),
           ),
         ),

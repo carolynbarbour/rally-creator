@@ -12,7 +12,6 @@ class GridScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Size dimensions = ref.watch(gridDimensionsProvider);
-    final int level = ref.watch(levelProvider);
     final List<ImageState> placedImages = ref.watch(placedImagesProvider);
     final String? selectedImageId = ref.watch(selectedImageIdProvider);
 
@@ -31,7 +30,7 @@ class GridScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Level $level')),
+      appBar: AppBar(title: const Text('Rally Course')),
       drawer: ImageSelectionDrawer(center: center),
       body: Stack(
         children: [
@@ -77,8 +76,8 @@ class GridScreen extends ConsumerWidget {
                     child: SizedBox(
                       width: initialImageSize,
                       height: initialImageSize,
-                      child: Image.network(
-                        imageState.url,
+                      child: Image.asset(
+                        imageState.assetPath,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(Icons.error, color: Colors.red);
@@ -101,10 +100,22 @@ class GridScreen extends ConsumerWidget {
                 children: [
                   IconButton(
                     icon: const Icon(
+                      Icons.rotate_90_degrees_ccw,
+                      color: Colors.white,
+                    ),
+                    tooltip: 'Rotate Left',
+                    onPressed: () {
+                      ref
+                          .read(placedImagesProvider.notifier)
+                          .rotateSelectedImage(clockwise: false);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(
                       Icons.rotate_90_degrees_cw,
                       color: Colors.white,
                     ),
-                    tooltip: 'Rotate',
+                    tooltip: 'Rotate Right',
                     onPressed: () {
                       ref
                           .read(placedImagesProvider.notifier)

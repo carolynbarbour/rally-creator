@@ -3,23 +3,27 @@ import 'package:flutter/material.dart';
 @immutable
 class ImageState {
   final String id;
-  final String url;
+  final String assetPath;
+  final String name;
   final Matrix4 matrix;
 
   const ImageState({
     required this.id,
-    required this.url,
+    required this.assetPath,
+    required this.name,
     required this.matrix,
   });
 
   ImageState copyWith({
     String? id,
-    String? url,
+    String? assetPath,
+    String? name,
     Matrix4? matrix,
   }) {
     return ImageState(
       id: id ?? this.id,
-      url: url ?? this.url,
+      assetPath: assetPath ?? this.assetPath,
+      name: name ?? this.name,
       matrix: matrix ?? this.matrix,
     );
   }

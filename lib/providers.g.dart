@@ -9,57 +9,80 @@ part of 'providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(GridDimensions)
-const gridDimensionsProvider = GridDimensionsProvider._();
+@ProviderFor(imageAssetsForLevel)
+const imageAssetsForLevelProvider = ImageAssetsForLevelFamily._();
 
-final class GridDimensionsProvider
-    extends $NotifierProvider<GridDimensions, Size> {
-  const GridDimensionsProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'gridDimensionsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+final class ImageAssetsForLevelProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<ImageAsset>>,
+          List<ImageAsset>,
+          FutureOr<List<ImageAsset>>
+        >
+    with $FutureModifier<List<ImageAsset>>, $FutureProvider<List<ImageAsset>> {
+  const ImageAssetsForLevelProvider._({
+    required ImageAssetsForLevelFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'imageAssetsForLevelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  String debugGetCreateSourceHash() => _$gridDimensionsHash();
+  String debugGetCreateSourceHash() => _$imageAssetsForLevelHash();
+
+  @override
+  String toString() {
+    return r'imageAssetsForLevelProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
-  GridDimensions create() => GridDimensions();
+  $FutureProviderElement<List<ImageAsset>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Size value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Size>(value),
-    );
+  @override
+  FutureOr<List<ImageAsset>> create(Ref ref) {
+    final argument = this.argument as int;
+    return imageAssetsForLevel(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ImageAssetsForLevelProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$gridDimensionsHash() => r'18a6387cbbbbaa7f5b1039a70090660c1c42fb62';
+String _$imageAssetsForLevelHash() =>
+    r'95fc2594df831453ffba4cb92a555fd72a1e6b29';
 
-abstract class _$GridDimensions extends $Notifier<Size> {
-  Size build();
-  @$mustCallSuper
+final class ImageAssetsForLevelFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<List<ImageAsset>>, int> {
+  const ImageAssetsForLevelFamily._()
+    : super(
+        retry: null,
+        name: r'imageAssetsForLevelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ImageAssetsForLevelProvider call(int level) =>
+      ImageAssetsForLevelProvider._(argument: level, from: this);
+
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<Size, Size>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<Size, Size>,
-              Size,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
+  String toString() => r'imageAssetsForLevelProvider';
 }
 
 @ProviderFor(Level)
@@ -93,7 +116,7 @@ final class LevelProvider extends $NotifierProvider<Level, int> {
   }
 }
 
-String _$levelHash() => r'c49c2a2d20414fe4e8346a31b9700c06a687c267';
+String _$levelHash() => r'b7c6df9200aab76832f702cdcdd58052dbb68eed';
 
 abstract class _$Level extends $Notifier<int> {
   int build();
@@ -114,52 +137,52 @@ abstract class _$Level extends $Notifier<int> {
   }
 }
 
-@ProviderFor(SelectedImageId)
-const selectedImageIdProvider = SelectedImageIdProvider._();
+@ProviderFor(GridDimensions)
+const gridDimensionsProvider = GridDimensionsProvider._();
 
-final class SelectedImageIdProvider
-    extends $NotifierProvider<SelectedImageId, String?> {
-  const SelectedImageIdProvider._()
+final class GridDimensionsProvider
+    extends $NotifierProvider<GridDimensions, Size> {
+  const GridDimensionsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'selectedImageIdProvider',
+        name: r'gridDimensionsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$selectedImageIdHash();
+  String debugGetCreateSourceHash() => _$gridDimensionsHash();
 
   @$internal
   @override
-  SelectedImageId create() => SelectedImageId();
+  GridDimensions create() => GridDimensions();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String? value) {
+  Override overrideWithValue(Size value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<String?>(value),
+      providerOverride: $SyncValueProvider<Size>(value),
     );
   }
 }
 
-String _$selectedImageIdHash() => r'a9a138a090375c7db4a9ff4a9693bea2bf904707';
+String _$gridDimensionsHash() => r'f6157bdb8b6adb1f678531a05944b4ad923c2279';
 
-abstract class _$SelectedImageId extends $Notifier<String?> {
-  String? build();
+abstract class _$GridDimensions extends $Notifier<Size> {
+  Size build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String?, String?>;
+    final ref = this.ref as $Ref<Size, Size>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<String?, String?>,
-              String?,
+              AnyNotifier<Size, Size>,
+              Size,
               Object?,
               Object?
             >;
@@ -199,7 +222,7 @@ final class HistoryProvider
   }
 }
 
-String _$historyHash() => r'c6a1278d52e96c4a6524bceb03c3376d416b6f96';
+String _$historyHash() => r'95d1867949dd5d48ed7be9f67e59b29201a17991';
 
 abstract class _$History extends $Notifier<List<List<ImageState>>> {
   List<List<ImageState>> build();
@@ -253,7 +276,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'd1ad21b31f3ba0d9093e9071c25c4c28bec1d037';
+String _$placedImagesHash() => r'036387e3018e41489e30eb0845bfd7217dddb4a8';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();
@@ -267,6 +290,59 @@ abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
             as $ClassProviderElement<
               AnyNotifier<List<ImageState>, List<ImageState>>,
               List<ImageState>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(SelectedImageId)
+const selectedImageIdProvider = SelectedImageIdProvider._();
+
+final class SelectedImageIdProvider
+    extends $NotifierProvider<SelectedImageId, String?> {
+  const SelectedImageIdProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedImageIdProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedImageIdHash();
+
+  @$internal
+  @override
+  SelectedImageId create() => SelectedImageId();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
+  }
+}
+
+String _$selectedImageIdHash() => r'145fd162aed1c7e01e8c49d8c496757793c4df05';
+
+abstract class _$SelectedImageId extends $Notifier<String?> {
+  String? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String?, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
               Object?,
               Object?
             >;

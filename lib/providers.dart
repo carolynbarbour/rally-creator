@@ -1,186 +1,23 @@
 import 'dart:math' as math;
 
+import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/image_state.dart';
+import 'package:myapp/rally_signs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 part 'providers.g.dart';
 
-const double initialImageSize = 150.0;
-
 final databaseProvider = Provider<FirebaseDatabase>((ref) {
   return FirebaseDatabase.instance;
 });
 
-@immutable
-class ImageAsset {
-  final String assetPath;
-  final String name;
-
-  const ImageAsset({required this.assetPath, required this.name});
-}
-
-List<String> _getImageListForLevel(int level) {
-  final List<String> baseImages = [
-    'assets/base/bonus.jpg',
-    'assets/base/finish.jpg',
-    'assets/base/start.jpg',
-  ];
-
-  final List<String> level1Images = [
-    'assets/level1/001.jpg',
-    'assets/level1/002.jpg',
-    'assets/level1/003.jpg',
-    'assets/level1/004.jpg',
-    'assets/level1/005.jpg',
-    'assets/level1/006.jpg',
-    'assets/level1/007.jpg',
-    'assets/level1/008.jpg',
-    'assets/level1/009.jpg',
-    'assets/level1/010.jpg',
-    'assets/level1/011.jpg',
-    'assets/level1/012.jpg',
-    'assets/level1/013.jpg',
-    'assets/level1/014.jpg',
-    'assets/level1/015.jpg',
-    'assets/level1/016.jpg',
-    'assets/level1/017.jpg',
-    'assets/level1/018.jpg',
-    'assets/level1/019.jpg',
-    'assets/level1/020.jpg',
-    'assets/level1/021.jpg',
-    'assets/level1/022.jpg',
-    'assets/level1/bonus.jpg',
-    'assets/level1/bonus1.jpg',
-    'assets/level1/bonus2.jpg',
-    'assets/level1/bonus3.jpg',
-  ];
-
-  final List<String> level2Images = [
-    'assets/level2/023.jpg',
-    'assets/level2/024.jpg',
-    'assets/level2/025.jpg',
-    'assets/level2/026.jpg',
-    'assets/level2/027.jpg',
-    'assets/level2/028.jpg',
-    'assets/level2/029.jpg',
-    'assets/level2/030.jpg',
-    'assets/level2/031.jpg',
-    'assets/level2/032.jpg',
-    'assets/level2/033.jpg',
-    'assets/level2/034.jpg',
-    'assets/level2/035.jpg',
-    'assets/level2/bonus4a.jpg',
-    'assets/level2/bonus4b.jpg',
-    'assets/level2/bonus5a.jpg',
-    'assets/level2/bonus5b.jpg',
-  ];
-
-  final List<String> level3Images = [
-    'assets/level3/036a.jpg',
-    'assets/level3/036b.jpg',
-    'assets/level3/037a.jpg',
-    'assets/level3/037b.jpg',
-    'assets/level3/038.jpg',
-    'assets/level3/039.jpg',
-    'assets/level3/040.jpg',
-    'assets/level3/041.jpg',
-    'assets/level3/042.jpg',
-    'assets/level3/043.jpg',
-    'assets/level3/044a.jpg',
-    'assets/level3/044b.jpg',
-    'assets/level3/045.jpg',
-    'assets/level3/bonus6.jpg',
-    'assets/level3/bonus7a.jpg',
-    'assets/level3/bonus7b.jpg',
-    'assets/level3/bonus8a.jpg',
-    'assets/level3/bonus8b.jpg',
-  ];
-
-  final List<String> level4Images = [
-    'assets/level4/046a.jpg',
-    'assets/level4/046b.jpg',
-    'assets/level4/047.jpg',
-    'assets/level4/048.jpg',
-    'assets/level4/049.jpg',
-    'assets/level4/050.jpg',
-    'assets/level4/051.jpg',
-    'assets/level4/052.jpg',
-    'assets/level4/053.jpg',
-    'assets/level4/054a.jpg',
-    'assets/level4/054b.jpg',
-    'assets/level4/055.jpg',
-    'assets/level4/056a.jpg',
-    'assets/level4/056b.jpg',
-    'assets/level4/bonus10a.jpg',
-    'assets/level4/bonus10b.jpg',
-    'assets/level4/bonus9.jpg',
-  ];
-
-  final List<String> level5Images = [
-    'assets/level5/057a.jpg',
-    'assets/level5/057b.jpg',
-    'assets/level5/058.jpg',
-    'assets/level5/059.jpg',
-    'assets/level5/060.jpg',
-    'assets/level5/061.jpg',
-    'assets/level5/062.jpg',
-    'assets/level5/bonus11.jpg',
-    'assets/level5/bonus12a.jpg',
-    'assets/level5/bonus12b.jpg',
-  ];
-
-  final List<String> level6Images = [
-    'assets/level6/063a.jpg',
-    'assets/level6/063b.jpg',
-    'assets/level6/064a.jpg',
-    'assets/level6/064b.jpg',
-    'assets/level6/065a.jpg',
-    'assets/level6/065b.jpg',
-    'assets/level6/066a.jpg',
-    'assets/level6/066b.jpg',
-    'assets/level6/067.jpg',
-    'assets/level6/068.jpg',
-    'assets/level6/bonus13.jpg',
-    'assets/level6/bonus14.jpg',
-    'assets/level6/bonus15.jpg',
-  ];
-
-  final allLevels = [
-    baseImages,
-    level1Images,
-    level2Images,
-    level3Images,
-    level4Images,
-    level5Images,
-    level6Images,
-  ];
-
-  return allLevels[level];
-}
-
 @riverpod
-Future<List<ImageAsset>> imageAssetsForLevel(ref, int level) async {
-  final imageList = _getImageListForLevel(level);
-  final assets = <ImageAsset>[];
-  for (final assetPath in imageList) {
-    final name = assetPath.split('/').last.replaceAll('.jpg', '');
-    assets.add(ImageAsset(assetPath: assetPath, name: name));
-  }
-  return assets;
-}
-
-@Riverpod(keepAlive: true)
-class Level extends _$Level {
-  @override
-  int build() => 0;
-
-  void setLevel(int newLevel) {
-    state = newLevel;
-  }
+Map<int, List<SignInfo>> signsByLevel(ref) {
+  return groupBy(rallySigns, (sign) => sign.level);
 }
 
 @Riverpod(keepAlive: true)
@@ -215,6 +52,33 @@ class History extends _$History {
 }
 
 @riverpod
+class IsReordering extends _$IsReordering {
+  List<ImageState>? _originalImageState;
+
+  @override
+  bool build() => false;
+
+  void toggle() {
+    state = !state;
+    if (state) {
+      // Entering reorder mode, save the current state.
+      _originalImageState = ref.read(placedImagesProvider);
+    } else {
+      // Exiting reorder mode, check if we need to add to history.
+      final currentState = ref.read(placedImagesProvider);
+      if (_originalImageState != null &&
+          !const DeepCollectionEquality().equals(
+            _originalImageState,
+            currentState,
+          )) {
+        ref.read(historyProvider.notifier).record(_originalImageState!);
+      }
+      _originalImageState = null;
+    }
+  }
+}
+
+@riverpod
 class PlacedImages extends _$PlacedImages {
   @override
   List<ImageState> build() => [];
@@ -223,27 +87,45 @@ class PlacedImages extends _$PlacedImages {
     ref.read(historyProvider.notifier).record(state);
   }
 
-  void addImage(String assetPath, String name, Offset center) {
+  void addImage(SignInfo sign, Offset center, double size) {
     _addToHistory();
     final newImage = ImageState(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      assetPath: assetPath,
-      name: name,
+      sign: sign,
       matrix: Matrix4.translationValues(
-        center.dx - initialImageSize / 2,
-        center.dy - initialImageSize / 2,
+        center.dx - size / 2,
+        center.dy - size / 2,
         0,
       ),
+      size: size,
     );
     state = [...state, newImage];
   }
 
-  void applyGestureUpdate(String id, Matrix4 translationDelta, Matrix4 scaleDelta, Matrix4 rotationDelta) {
+  void reorderImages(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final items = [...state];
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    state = items;
+  }
+
+  void applyGestureUpdate(
+    String id,
+    Matrix4 translationDelta,
+    Matrix4 scaleDelta,
+    Matrix4 rotationDelta,
+  ) {
     _addToHistory();
     state = [
       for (final image in state)
-        if (image.id == id) 
-          image.copyWith(matrix: translationDelta * rotationDelta * scaleDelta * image.matrix)
+        if (image.id == id)
+          image.copyWith(
+            matrix:
+                translationDelta * rotationDelta * scaleDelta * image.matrix,
+          )
         else
           image,
     ];
@@ -266,18 +148,15 @@ class PlacedImages extends _$PlacedImages {
 
     state = state.map((image) {
       if (image.id == selectedId) {
-        final translation = vector.Vector3.zero();
-        final rotation = vector.Quaternion.identity();
-        final scale = vector.Vector3.zero();
-        image.matrix.decompose(translation, rotation, scale);
+        final M = image.matrix;
+        final centerLocal = vector.Vector3(image.size / 2, image.size / 2, 0);
+        final C = M.transform3(centerLocal);
 
-        final rotationUpdate = vector.Quaternion.axisAngle(
-          vector.Vector3(0, 0, 1),
-          angle,
-        );
-        final newRotation = rotation * rotationUpdate;
+        final rotationMatrix = Matrix4.rotationZ(angle);
+        final transform =
+            Matrix4.translation(C) * rotationMatrix * Matrix4.translation(-C);
 
-        final newMatrix = Matrix4.compose(translation, newRotation, scale);
+        final newMatrix = transform * M;
 
         return image.copyWith(matrix: newMatrix);
       } else {
@@ -294,14 +173,16 @@ class PlacedImages extends _$PlacedImages {
 
     state = state.map((image) {
       if (image.id == selectedId) {
-        final translation = vector.Vector3.zero();
-        final rotation = vector.Quaternion.identity();
-        final scale = vector.Vector3.zero();
-        image.matrix.decompose(translation, rotation, scale);
+        final M = image.matrix;
+        final centerLocal = vector.Vector3(image.size / 2, image.size / 2, 0);
+        final C = M.transform3(centerLocal);
 
-        scale.scale(scaleFactor);
+        final scaleMatrix = Matrix4.identity()
+          ..scaleByVector3(vector.Vector3(scaleFactor, scaleFactor, 1.0));
+        final transform =
+            Matrix4.translation(C) * scaleMatrix * Matrix4.translation(-C);
 
-        final newMatrix = Matrix4.compose(translation, rotation, scale);
+        final newMatrix = transform * M;
 
         return image.copyWith(matrix: newMatrix);
       } else {

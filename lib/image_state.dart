@@ -1,36 +1,53 @@
 import 'package:flutter/material.dart';
 
 @immutable
+class SignInfo {
+  final String assetPath;
+  final String number;
+  final String name;
+  final int level;
+
+  const SignInfo({
+    required this.assetPath,
+    required this.number,
+    required this.name,
+    required this.level,
+  });
+}
+
+@immutable
 class ImageState {
   final String id;
-  final String assetPath;
-  final String name;
+  final SignInfo sign;
   final Matrix4 matrix;
+  final double size;
 
   const ImageState({
     required this.id,
-    required this.assetPath,
-    required this.name,
+    required this.sign,
     required this.matrix,
+    required this.size,
   });
 
+  String get assetPath => sign.assetPath;
+  String get name => sign.name;
+  String get number => sign.number;
+
   bool get isCounted {
-    return !name.contains('start') &&
-        !name.contains('finish') &&
-        !name.contains('bonus');
+    return number.isNotEmpty && int.tryParse(number) != null;
   }
 
   ImageState copyWith({
     String? id,
-    String? assetPath,
-    String? name,
+    SignInfo? sign,
     Matrix4? matrix,
+    double? size,
   }) {
     return ImageState(
       id: id ?? this.id,
-      assetPath: assetPath ?? this.assetPath,
-      name: name ?? this.name,
+      sign: sign ?? this.sign,
       matrix: matrix ?? this.matrix,
+      size: size ?? this.size,
     );
   }
 }

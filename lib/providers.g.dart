@@ -9,133 +9,52 @@ part of 'providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(imageAssetsForLevel)
-const imageAssetsForLevelProvider = ImageAssetsForLevelFamily._();
+@ProviderFor(signsByLevel)
+const signsByLevelProvider = SignsByLevelProvider._();
 
-final class ImageAssetsForLevelProvider
+final class SignsByLevelProvider
     extends
         $FunctionalProvider<
-          AsyncValue<List<ImageAsset>>,
-          List<ImageAsset>,
-          FutureOr<List<ImageAsset>>
+          Map<int, List<SignInfo>>,
+          Map<int, List<SignInfo>>,
+          Map<int, List<SignInfo>>
         >
-    with $FutureModifier<List<ImageAsset>>, $FutureProvider<List<ImageAsset>> {
-  const ImageAssetsForLevelProvider._({
-    required ImageAssetsForLevelFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'imageAssetsForLevelProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$imageAssetsForLevelHash();
-
-  @override
-  String toString() {
-    return r'imageAssetsForLevelProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  $FutureProviderElement<List<ImageAsset>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<ImageAsset>> create(Ref ref) {
-    final argument = this.argument as int;
-    return imageAssetsForLevel(ref, argument);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ImageAssetsForLevelProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$imageAssetsForLevelHash() =>
-    r'2a15cd1062b170968962b7a2806881d0137252e3';
-
-final class ImageAssetsForLevelFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<List<ImageAsset>>, int> {
-  const ImageAssetsForLevelFamily._()
-    : super(
-        retry: null,
-        name: r'imageAssetsForLevelProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  ImageAssetsForLevelProvider call(int level) =>
-      ImageAssetsForLevelProvider._(argument: level, from: this);
-
-  @override
-  String toString() => r'imageAssetsForLevelProvider';
-}
-
-@ProviderFor(Level)
-const levelProvider = LevelProvider._();
-
-final class LevelProvider extends $NotifierProvider<Level, int> {
-  const LevelProvider._()
+    with $Provider<Map<int, List<SignInfo>>> {
+  const SignsByLevelProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'levelProvider',
-        isAutoDispose: false,
+        name: r'signsByLevelProvider',
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$levelHash();
+  String debugGetCreateSourceHash() => _$signsByLevelHash();
 
   @$internal
   @override
-  Level create() => Level();
+  $ProviderElement<Map<int, List<SignInfo>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  Map<int, List<SignInfo>> create(Ref ref) {
+    return signsByLevel(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
+  Override overrideWithValue(Map<int, List<SignInfo>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<Map<int, List<SignInfo>>>(value),
     );
   }
 }
 
-String _$levelHash() => r'ce826910216116c504f5ee6221b1961eb2cf478c';
-
-abstract class _$Level extends $Notifier<int> {
-  int build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
-    element.handleValue(ref, created);
-  }
-}
+String _$signsByLevelHash() => r'1042d3ba092d0608b2152ada36a3f262fb57125a';
 
 @ProviderFor(GridDimensions)
 const gridDimensionsProvider = GridDimensionsProvider._();
@@ -244,6 +163,58 @@ abstract class _$History extends $Notifier<List<List<ImageState>>> {
   }
 }
 
+@ProviderFor(IsReordering)
+const isReorderingProvider = IsReorderingProvider._();
+
+final class IsReorderingProvider extends $NotifierProvider<IsReordering, bool> {
+  const IsReorderingProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isReorderingProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$isReorderingHash();
+
+  @$internal
+  @override
+  IsReordering create() => IsReordering();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$isReorderingHash() => r'42928e3ea319bb2242536fed8b35624bdcb949ea';
+
+abstract class _$IsReordering extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(PlacedImages)
 const placedImagesProvider = PlacedImagesProvider._();
 
@@ -276,7 +247,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'b857f129dc5e2b3d28c6d24710f94949558e9944';
+String _$placedImagesHash() => r'a7d2355f1b783eaeff32738cde11631ec8cf7e03';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();

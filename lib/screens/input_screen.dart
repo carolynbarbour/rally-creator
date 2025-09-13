@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 
-class InputScreen extends StatelessWidget {
+class InputScreen extends ConsumerWidget {
   InputScreen({super.key});
 
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final int courseLevel = ref.watch(levelProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Grid Dimensions')),
       body: Padding(
@@ -20,47 +22,58 @@ class InputScreen extends StatelessWidget {
           children: [
             TextField(
               controller: _widthController,
-              decoration: const InputDecoration(labelText: 'Width (10-20)'),
+              decoration: const InputDecoration(labelText: 'Width (8-20)'),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _heightController,
-              decoration: const InputDecoration(labelText: 'Height (10-20)'),
+              decoration: const InputDecoration(labelText: 'Height (8-20)'),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 32),
-            Consumer(
-              builder: (context, ref, child) {
-                return ElevatedButton(
-                  onPressed: () {
-                    final int width = int.tryParse(_widthController.text) ?? 0;
-                    final int height =
-                        int.tryParse(_heightController.text) ?? 0;
-
-                    if (width >= 10 &&
-                        width <= 20 &&
-                        height >= 10 &&
-                        height <= 20) {
-                      ref
-                          .read(gridDimensionsProvider.notifier)
-                          .setDimensions(
-                            Size(width.toDouble(), height.toDouble()),
-                          );
-                      context.go('/grid');
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'Please enter values between 10 and 20.',
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text('Continue'),
+            const SizedBox(height: 16),
+            DropdownButton<int>(
+              value: courseLevel,
+              items: List.generate(6, (index) {
+                return DropdownMenuItem<int>(
+                  value: index + 1,
+                  child: Text('Level ${index + 1}'),
                 );
+              }),
+              onChanged: (int? newValue) {
+                if (newValue != null) {
+                  ref.read(levelProvider.notifier).setLevel(newValue);
+                }
               },
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                final int width = int.tryParse(_widthController.text) ?? 0;
+                final int height =
+                    int.tryParse(_heightController.text) ?? 0;
+
+                if (width >= 8 &&
+                    width <= 20 &&
+                    height >= 8 &&
+                    height <= 20) {
+                  ref
+                      .read(gridDimensionsProvider.notifier)
+                      .setDimensions(
+                        Size(width.toDouble(), height.toDouble()),
+                      );
+                  context.go('/grid');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Please enter values between 8 and 20.',
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Continue'),
             ),
           ],
         ),

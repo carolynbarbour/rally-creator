@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/course_constraints.dart';
 import 'package:myapp/image_state.dart';
+import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 
 class SignReorderableList extends ConsumerWidget {
@@ -23,10 +25,15 @@ class SignReorderableList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final totalStatic = placedImages.fold<int>(
-      0,
-      (sum, image) => sum + image.sign.static,
-    );
+    final totalStatic = placedImages
+        .where((element) => element.isCounted)
+        .fold<int>(0, (sum, image) => sum + image.sign.static);
+    final int courseLevel = ref.watch(levelProvider);
+    final constraints = courseConstraints[courseLevel]!;
+    final totalSigns = placedImages
+        .where((element) => element.isCounted)
+        .length;
+
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -76,10 +83,33 @@ class SignReorderableList extends ConsumerWidget {
             },
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: Text(
-              'Total Statics: $totalStatic',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+            child: Column(
+              children: [
+                Text(
+                  'Total Statics: $totalStatic / ${constraints.maxStatics}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: totalStatic > constraints.maxStatics
+                        ? Colors.red
+                        : Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Total Signs: $totalSigns (${constraints.minSigns}-${constraints.maxSigns})',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color:
+                        totalSigns < constraints.minSigns ||
+                            totalSigns > constraints.maxSigns
+                        ? Colors.red
+                        : Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
           // Add padding to the bottom to avoid being obscured by the action bar

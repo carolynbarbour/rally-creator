@@ -108,7 +108,7 @@ class Grid extends ConsumerWidget {
                       // The interactive images, now correctly layered
                       ...placedImages.map((imageState) {
                         final bool isSpecialSign =
-                            imageState.assetPath.contains('base') &&
+                            imageState.assetPath.contains('base') ||
                             imageState.assetPath.contains('bonus');
 
                         int displayIndex = -1;

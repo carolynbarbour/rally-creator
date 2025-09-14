@@ -6,12 +6,14 @@ class SignInfo {
   final String number;
   final String name;
   final int level;
+  final int static;
 
   const SignInfo({
     required this.assetPath,
     required this.number,
     required this.name,
     required this.level,
+    required this.static,
   });
 }
 

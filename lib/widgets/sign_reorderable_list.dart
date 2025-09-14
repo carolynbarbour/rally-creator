@@ -23,6 +23,10 @@ class SignReorderableList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final totalStatic = placedImages.fold<int>(
+      0,
+      (sum, image) => sum + image.sign.static,
+    );
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -70,6 +74,13 @@ class SignReorderableList extends ConsumerWidget {
                 ),
               );
             },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: Text(
+              'Total Statics: $totalStatic',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
           // Add padding to the bottom to avoid being obscured by the action bar
           const SizedBox(height: 64),

@@ -32,6 +32,11 @@ class Grid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final List<ImageState> numberedSigns = placedImages.where((image) {
+      return !image.assetPath.toLowerCase().contains('base') &&
+          !image.assetPath.toLowerCase().contains('bonus');
+    }).toList();
+
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -101,9 +106,16 @@ class Grid extends ConsumerWidget {
                         ),
                       ),
                       // The interactive images, now correctly layered
-                      ...placedImages.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final imageState = entry.value;
+                      ...placedImages.map((imageState) {
+                        final bool isSpecialSign =
+                            imageState.assetPath.contains('base') &&
+                            imageState.assetPath.contains('bonus');
+
+                        int displayIndex = -1;
+                        if (!isSpecialSign) {
+                          displayIndex = numberedSigns.indexOf(imageState);
+                        }
+
                         return Transform(
                           transform: imageState.matrix,
                           child: MatrixGestureDetector(
@@ -150,16 +162,15 @@ class Grid extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
-                                  if (!isReordering)
+                                  if (!isReordering && !isSpecialSign)
                                     Positioned(
                                       top: -6,
                                       right: -12,
                                       child: Chip(
                                         padding: const EdgeInsets.all(0),
                                         backgroundColor: Colors.yellow,
-
                                         label: Text(
-                                          '${index + 1}',
+                                          '${displayIndex + 1}',
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 10,

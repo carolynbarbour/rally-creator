@@ -47,7 +47,7 @@ class History extends _$History {
     }
     final previousState = state.last;
     state = state.sublist(0, state.length - 1);
-    ref.read(placedImagesProvider.notifier).state = previousState;
+    ref.read(placedImagesProvider.notifier).loadState(previousState);
   }
 }
 
@@ -78,10 +78,14 @@ class IsReordering extends _$IsReordering {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PlacedImages extends _$PlacedImages {
   @override
   List<ImageState> build() => [];
+
+  void loadState(List<ImageState> newState) {
+    state = newState;
+  }
 
   void _addToHistory() {
     ref.read(historyProvider.notifier).record(state);
@@ -208,5 +212,17 @@ class SelectedImageId extends _$SelectedImageId {
 
   void select(String? id) {
     state = id;
+  }
+}
+
+@Riverpod(keepAlive: true)
+class AppTitle extends _$AppTitle {
+  @override
+  String build() {
+    return 'Rally Course';
+  }
+
+  void setTitle(String newTitle) {
+    state = newTitle;
   }
 }

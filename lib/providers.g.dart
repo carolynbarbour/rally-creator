@@ -141,7 +141,7 @@ final class HistoryProvider
   }
 }
 
-String _$historyHash() => r'95d1867949dd5d48ed7be9f67e59b29201a17991';
+String _$historyHash() => r'46d9c8cae89390175c7bc5b81946a71afef724a3';
 
 abstract class _$History extends $Notifier<List<List<ImageState>>> {
   List<List<ImageState>> build();
@@ -226,7 +226,7 @@ final class PlacedImagesProvider
         argument: null,
         retry: null,
         name: r'placedImagesProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -247,7 +247,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'a7d2355f1b783eaeff32738cde11631ec8cf7e03';
+String _$placedImagesHash() => r'09ecb817e88daefde4e90032e4565c3e3cfbbbd0';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();
@@ -314,6 +314,58 @@ abstract class _$SelectedImageId extends $Notifier<String?> {
             as $ClassProviderElement<
               AnyNotifier<String?, String?>,
               String?,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(AppTitle)
+const appTitleProvider = AppTitleProvider._();
+
+final class AppTitleProvider extends $NotifierProvider<AppTitle, String> {
+  const AppTitleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appTitleProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appTitleHash();
+
+  @$internal
+  @override
+  AppTitle create() => AppTitle();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$appTitleHash() => r'565e359a037a9e6969825fe2bef2cfecc8de41da';
+
+abstract class _$AppTitle extends $Notifier<String> {
+  String build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String, String>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
               Object?,
               Object?
             >;

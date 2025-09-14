@@ -4,14 +4,26 @@ import 'package:go_router/go_router.dart';
 import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 
-class InputScreen extends ConsumerWidget {
-  InputScreen({super.key});
-
-  final TextEditingController _widthController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
+class InputScreen extends ConsumerStatefulWidget {
+  const InputScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<InputScreen> createState() => _InputScreenState();
+}
+
+class _InputScreenState extends ConsumerState<InputScreen> {
+  final TextEditingController _widthController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = ref.read(appTitleProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final int courseLevel = ref.watch(levelProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Grid Dimensions')),
@@ -20,6 +32,11 @@ class InputScreen extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(labelText: 'Course Title'),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _widthController,
               decoration: const InputDecoration(labelText: 'Width (8-20)'),
@@ -49,26 +66,21 @@ class InputScreen extends ConsumerWidget {
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
+                ref
+                    .read(appTitleProvider.notifier)
+                    .setTitle(_titleController.text);
                 final int width = int.tryParse(_widthController.text) ?? 0;
-                final int height =
-                    int.tryParse(_heightController.text) ?? 0;
+                final int height = int.tryParse(_heightController.text) ?? 0;
 
-                if (width >= 8 &&
-                    width <= 20 &&
-                    height >= 8 &&
-                    height <= 20) {
+                if (width >= 8 && width <= 20 && height >= 8 && height <= 20) {
                   ref
                       .read(gridDimensionsProvider.notifier)
-                      .setDimensions(
-                        Size(width.toDouble(), height.toDouble()),
-                      );
+                      .setDimensions(Size(width.toDouble(), height.toDouble()));
                   context.go('/grid');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text(
-                        'Please enter values between 8 and 20.',
-                      ),
+                      content: Text('Please enter values between 8 and 20.'),
                     ),
                   );
                 }

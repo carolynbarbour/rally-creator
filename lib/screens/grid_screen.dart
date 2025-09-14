@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/pdf_generator.dart';
 import 'package:myapp/widgets/grid.dart';
 import 'package:myapp/widgets/image_button_row.dart';
 import 'package:myapp/widgets/image_selection_drawer.dart';
@@ -27,8 +28,19 @@ class GridScreen extends ConsumerWidget {
     final double cellDimension = (screenSize.width - 60) / dimensions.width;
     final gridHeight = cellDimension * dimensions.height;
 
+    final String appTitle = ref.watch(appTitleProvider);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Rally Course')),
+      appBar: AppBar(
+        title: Text(appTitle),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            onPressed: () =>
+                generateAndPrintPdf(placedImages, dimensions, appTitle),
+          ),
+        ],
+      ),
       drawer: ImageSelectionDrawer(
         center: center,
         cellDimension: cellDimension,

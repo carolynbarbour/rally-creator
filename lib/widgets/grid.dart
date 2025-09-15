@@ -165,7 +165,7 @@ class Grid extends ConsumerWidget {
                                   if (!isReordering && !isSpecialSign)
                                     Positioned(
                                       top: -6,
-                                      right: -12,
+                                      right: -10,
                                       child: Chip(
                                         padding: const EdgeInsets.all(0),
                                         backgroundColor: Colors.yellow,

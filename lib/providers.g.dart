@@ -247,7 +247,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'09ecb817e88daefde4e90032e4565c3e3cfbbbd0';
+String _$placedImagesHash() => r'b0c4b09d9aeeb9f379a756d37a847761200bcebb';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();

@@ -19,7 +19,10 @@ class ImageSelectionDrawer extends ConsumerWidget {
     final courseLevel = ref.watch(levelProvider);
 
     final levelKeys =
-        signsByLevel.keys.where((level) => level != 0 && level <= courseLevel).toList()..sort();
+        signsByLevel.keys
+            .where((level) => level != 0 && level <= courseLevel)
+            .toList()
+          ..sort();
     final tabs = <Widget>[
       const Tab(text: 'Base'),
       ...levelKeys.map((level) => Tab(text: 'Level $level')),
@@ -48,11 +51,21 @@ class ImageSelectionDrawer extends ConsumerWidget {
                       fit: BoxFit.contain,
                     ),
                     title: Text(sign.name),
-                    subtitle: Text('#${sign.number}'),
+                    subtitle: sign.number.isEmpty
+                        ? Text('#${sign.number}')
+                        : null,
                     onTap: () {
+                      var newImageSize = cellDimension;
+                      if (sign.assetPath.contains('cone')) {
+                        if (sign.assetPath.contains('3')) {
+                          newImageSize = cellDimension * 1.5;
+                        } else if (sign.assetPath.contains('4')) {
+                          newImageSize = cellDimension * 2.5;
+                        }
+                      }
                       ref
                           .read(placedImagesProvider.notifier)
-                          .addImage(sign, center, cellDimension);
+                          .addImage(sign, center, newImageSize);
                       Navigator.pop(context);
                     },
                   );

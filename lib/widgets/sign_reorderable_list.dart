@@ -30,9 +30,13 @@ class SignReorderableList extends ConsumerWidget {
         .fold<int>(0, (sum, image) => sum + image.sign.static);
     final int courseLevel = ref.watch(levelProvider);
     final constraints = courseConstraints[courseLevel]!;
-    final totalSigns = placedImages
+    final totalCountedSigns = placedImages
         .where((element) => element.isCounted)
         .length;
+    // Images without names are not signs
+    final signs = placedImages
+        .where((element) => element.name.isNotEmpty)
+        .toList();
 
     return SliverToBoxAdapter(
       child: Column(
@@ -53,7 +57,7 @@ class SignReorderableList extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             buildDefaultDragHandles: isReordering,
-            itemCount: placedImages.length,
+            itemCount: signs.length,
             onReorder: (oldIndex, newIndex) {
               ref
                   .read(placedImagesProvider.notifier)
@@ -63,8 +67,8 @@ class SignReorderableList extends ConsumerWidget {
               return Material(color: Colors.transparent, child: widget);
             },
             itemBuilder: (context, index) {
-              final image = placedImages[index];
-              final count = placedImages
+              final image = signs[index];
+              final count = signs
                   .take(index + 1)
                   .where((img) => img.isCounted)
                   .length;
@@ -74,9 +78,11 @@ class SignReorderableList extends ConsumerWidget {
                 child: ListTile(
                   leading: isReordering
                       ? const SizedBox()
-                      : Text(image.isCounted ? '$count' : '–'),
+                      : Text(image.isCounted ? '$count' : '-'),
                   title: Text(image.name),
-                  subtitle: Text('#${image.number}'),
+                  subtitle: image.number.isEmpty
+                      ? Text('#${image.number}')
+                      : null,
                   trailing: isReordering ? const Icon(Icons.drag_handle) : null,
                 ),
               );
@@ -98,13 +104,13 @@ class SignReorderableList extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Total Signs: $totalSigns (${constraints.minSigns}-${constraints.maxSigns})',
+                  'Total Signs: $totalCountedSigns (${constraints.minSigns}-${constraints.maxSigns})',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color:
-                        totalSigns < constraints.minSigns ||
-                            totalSigns > constraints.maxSigns
+                        totalCountedSigns < constraints.minSigns ||
+                            totalCountedSigns > constraints.maxSigns
                         ? Colors.red
                         : Colors.black,
                   ),

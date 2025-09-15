@@ -145,8 +145,6 @@ Future<void> generateAndPrintPdf(
                               final lowercasedAssetPath = image.assetPath
                                   .toLowerCase();
                               final bool isSpecialSign =
-                                  lowercasedAssetPath.contains('start') ||
-                                  lowercasedAssetPath.contains('finish') ||
                                   lowercasedAssetPath.contains('bonus') ||
                                   lowercasedAssetPath.contains('base');
 
@@ -156,7 +154,7 @@ Future<void> generateAndPrintPdf(
                               }
 
                               final translation = image.matrix.getTranslation();
-                              final angle = math.atan2(
+                              final angle = -math.atan2(
                                 image.matrix.storage[1],
                                 image.matrix.storage[0],
                               );
@@ -253,6 +251,11 @@ Future<void> generateAndPrintPdf(
                         pw.SizedBox(width: 10),
                         pw.Text(
                           image.name,
+                          style: const pw.TextStyle(fontSize: 8),
+                        ),
+                        pw.SizedBox(width: 10),
+                        pw.Text(
+                          image.number.isEmpty ? '' : '#${image.number}',
                           style: const pw.TextStyle(fontSize: 8),
                         ),
                       ],

@@ -99,7 +99,7 @@ class PlacedImages extends _$PlacedImages {
       matrix: Matrix4.translationValues(
         center.dx - size / 2,
         center.dy - size / 2,
-        0,
+        sign.assetPath.contains('base') ? -1.0 : 0, // Bases below other signs,
       ),
       size: size,
     );

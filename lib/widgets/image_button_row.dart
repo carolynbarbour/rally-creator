@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/providers.dart';
@@ -7,6 +8,9 @@ class ImageButtonRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final moreRotations = ref.watch(moreRotationsProvider);
+    final angle = moreRotations ? math.pi / 4 : math.pi / 2; // 45 or 90 degrees
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -34,14 +38,16 @@ class ImageButtonRow extends ConsumerWidget {
           onPressed: () {
             ref
                 .read(placedImagesProvider.notifier)
-                .rotateSelectedImage(clockwise: false);
+                .rotateSelectedImage(angle: -angle);
           },
         ),
         IconButton(
           icon: const Icon(Icons.rotate_90_degrees_cw, color: Colors.white),
           tooltip: 'Rotate Right',
           onPressed: () {
-            ref.read(placedImagesProvider.notifier).rotateSelectedImage();
+            ref
+                .read(placedImagesProvider.notifier)
+                .rotateSelectedImage(angle: angle);
           },
         ),
         IconButton(
@@ -49,13 +55,6 @@ class ImageButtonRow extends ConsumerWidget {
           tooltip: 'Delete',
           onPressed: () {
             ref.read(placedImagesProvider.notifier).deleteSelectedImage();
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.undo, color: Colors.white),
-          tooltip: 'Undo',
-          onPressed: () {
-            ref.read(historyProvider.notifier).undo();
           },
         ),
       ],

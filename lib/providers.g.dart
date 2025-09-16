@@ -372,3 +372,56 @@ abstract class _$AppTitle extends $Notifier<String> {
     element.handleValue(ref, created);
   }
 }
+
+@ProviderFor(MoreRotations)
+const moreRotationsProvider = MoreRotationsProvider._();
+
+final class MoreRotationsProvider
+    extends $NotifierProvider<MoreRotations, bool> {
+  const MoreRotationsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'moreRotationsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$moreRotationsHash();
+
+  @$internal
+  @override
+  MoreRotations create() => MoreRotations();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$moreRotationsHash() => r'65e9b33f6b88252b0fd4813ee72619a05ca6a78a';
+
+abstract class _$MoreRotations extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

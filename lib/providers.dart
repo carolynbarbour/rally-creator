@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:collection/collection.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/widgets.dart';
@@ -143,12 +141,11 @@ class PlacedImages extends _$PlacedImages {
     ];
   }
 
-  void rotateSelectedImage({bool clockwise = true}) {
+  void rotateSelectedImage({required double angle}) {
     final selectedId = ref.read(selectedImageIdProvider);
     if (selectedId == null) return;
 
     _addToHistory();
-    final angle = clockwise ? math.pi / 2 : -math.pi / 2;
 
     state = state.map((image) {
       if (image.id == selectedId) {
@@ -224,5 +221,17 @@ class AppTitle extends _$AppTitle {
 
   void setTitle(String newTitle) {
     state = newTitle;
+  }
+}
+
+@riverpod
+class MoreRotations extends _$MoreRotations {
+  @override
+  bool build() {
+    return false;
+  }
+
+  void update(bool newValue) {
+    state = newValue;
   }
 }

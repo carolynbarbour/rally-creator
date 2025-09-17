@@ -56,6 +56,52 @@ final class SignsByLevelProvider
 
 String _$signsByLevelHash() => r'1042d3ba092d0608b2152ada36a3f262fb57125a';
 
+@ProviderFor(numberedSigns)
+const numberedSignsProvider = NumberedSignsProvider._();
+
+final class NumberedSignsProvider
+    extends
+        $FunctionalProvider<
+          List<ImageState>,
+          List<ImageState>,
+          List<ImageState>
+        >
+    with $Provider<List<ImageState>> {
+  const NumberedSignsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'numberedSignsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$numberedSignsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<ImageState>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<ImageState> create(Ref ref) {
+    return numberedSigns(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<ImageState> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<ImageState>>(value),
+    );
+  }
+}
+
+String _$numberedSignsHash() => r'ad1a2b03fb2cf64e2f6b79cc2aa14dd9fb729c2d';
+
 @ProviderFor(GridDimensions)
 const gridDimensionsProvider = GridDimensionsProvider._();
 
@@ -141,7 +187,7 @@ final class HistoryProvider
   }
 }
 
-String _$historyHash() => r'46d9c8cae89390175c7bc5b81946a71afef724a3';
+String _$historyHash() => r'ecadcf1a35a8e001fa42fabf971b63b92944bd46';
 
 abstract class _$History extends $Notifier<List<List<ImageState>>> {
   List<List<ImageState>> build();
@@ -247,7 +293,7 @@ final class PlacedImagesProvider
   }
 }
 
-String _$placedImagesHash() => r'b0c4b09d9aeeb9f379a756d37a847761200bcebb';
+String _$placedImagesHash() => r'2ab605555d36ea498f84f58c4ad4acfb9af9fba2';
 
 abstract class _$PlacedImages extends $Notifier<List<ImageState>> {
   List<ImageState> build();

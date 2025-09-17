@@ -18,6 +18,16 @@ Map<int, List<SignInfo>> signsByLevel(ref) {
   return groupBy(rallySigns, (sign) => sign.level);
 }
 
+@riverpod
+List<ImageState> numberedSigns(ref) {
+  final images = ref.watch(placedImagesProvider);
+  return images.where((image) {
+    final lowercasedAssetPath = image.assetPath.toLowerCase();
+    return !lowercasedAssetPath.contains('base') &&
+        !lowercasedAssetPath.contains('bonus');
+  }).toList();
+}
+
 @Riverpod(keepAlive: true)
 class GridDimensions extends _$GridDimensions {
   @override
@@ -36,16 +46,16 @@ class History extends _$History {
   }
 
   void record(List<ImageState> imageStates) {
-    state = [...state, imageStates];
+    //state = [...state, imageStates];
   }
 
   void undo() {
-    if (state.isEmpty) {
-      return;
-    }
-    final previousState = state.last;
-    state = state.sublist(0, state.length - 1);
-    ref.read(placedImagesProvider.notifier).loadState(previousState);
+    // if (state.isEmpty) {
+    //   return;
+    // }
+    // final previousState = state.last;
+    // state = state.sublist(0, state.length - 1);
+    // ref.read(placedImagesProvider.notifier).loadState(previousState);
   }
 }
 

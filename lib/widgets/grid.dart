@@ -32,10 +32,7 @@ class Grid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<ImageState> numberedSigns = placedImages.where((image) {
-      return !image.assetPath.toLowerCase().contains('base') &&
-          !image.assetPath.toLowerCase().contains('bonus');
-    }).toList();
+    final numberedSigns = ref.watch(numberedSignsProvider);
 
     return SliverToBoxAdapter(
       child: Column(

@@ -36,7 +36,9 @@ class ImageState {
   String get number => sign.number;
 
   bool get isCounted {
-    return number.isNotEmpty && int.tryParse(number) != null;
+    return number.isNotEmpty &&
+        int.tryParse(number) != null &&
+        !assetPath.toLowerCase().contains('base');
   }
 
   ImageState copyWith({

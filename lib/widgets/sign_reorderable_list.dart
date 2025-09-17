@@ -25,17 +25,28 @@ class SignReorderableList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final numberedSigns = ref.watch(numberedSignsProvider);
+
     final totalStatic = placedImages
         .where((element) => element.isCounted)
         .fold<int>(0, (sum, image) => sum + image.sign.static);
+
     final int courseLevel = ref.watch(levelProvider);
     final constraints = courseConstraints[courseLevel]!;
-    final totalCountedSigns = placedImages
-        .where((element) => element.isCounted)
-        .length;
-    // Images without names are not signs
+
+    // Use the length of the numbered signs
+    final totalCountedSigns = numberedSigns.length;
+
+    // Images without names are not signs & images that are "base" are not signs unless they are Start, Finish, or Bonus
     final signs = placedImages
-        .where((element) => element.name.isNotEmpty)
+        .where(
+          (element) =>
+              element.name.isNotEmpty &&
+              !(element.assetPath.toLowerCase().contains('base') &&
+                  !(element.name.contains('Start') ||
+                      element.name.contains('Finish') ||
+                      element.name.contains('Bonus'))),
+        )
         .toList();
 
     return SliverToBoxAdapter(
@@ -68,17 +79,14 @@ class SignReorderableList extends ConsumerWidget {
             },
             itemBuilder: (context, index) {
               final image = signs[index];
-              final count = signs
-                  .take(index + 1)
-                  .where((img) => img.isCounted)
-                  .length;
+              final displayIndex = numberedSigns.indexOf(image);
               return Card(
                 key: ValueKey(image.id),
                 margin: const EdgeInsets.symmetric(vertical: 4.0),
                 child: ListTile(
                   leading: isReordering
                       ? const SizedBox()
-                      : Text(image.isCounted ? '$count' : '-'),
+                      : Text(displayIndex != -1 ? '${displayIndex + 1}' : '-'),
                   title: Text(image.name),
                   subtitle: image.number.isEmpty
                       ? Text('#${image.number}')

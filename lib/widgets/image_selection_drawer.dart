@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:myapp/image_state.dart';
 import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 
@@ -50,19 +51,12 @@ class ImageSelectionDrawer extends ConsumerWidget {
                       width: 100,
                       fit: BoxFit.contain,
                     ),
-                    title: Text(sign.name),
-                    subtitle: sign.number.isEmpty
+                    title: sign.name.isNotEmpty ? Text(sign.name) : null,
+                    subtitle: sign.number.isNotEmpty
                         ? Text('#${sign.number}')
                         : null,
                     onTap: () {
-                      var newImageSize = cellDimension;
-                      if (sign.assetPath.contains('cone')) {
-                        if (sign.assetPath.contains('3')) {
-                          newImageSize = cellDimension * 1.5;
-                        } else if (sign.assetPath.contains('4')) {
-                          newImageSize = cellDimension * 2.5;
-                        }
-                      }
+                      var newImageSize = customScaling(cellDimension, sign);
                       ref
                           .read(placedImagesProvider.notifier)
                           .addImage(sign, center, newImageSize);
@@ -100,5 +94,32 @@ class ImageSelectionDrawer extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  double customScaling(double cellDimension, SignInfo sign) {
+    double newImageSize = cellDimension;
+    if (sign.assetPath.contains('cone')) {
+      if (sign.assetPath.contains('3')) {
+        newImageSize = cellDimension * 1.5;
+      } else if (sign.assetPath.contains('4')) {
+        newImageSize = cellDimension * 2.5;
+      }
+    } else {
+      if (sign.assetPath.contains('jump') || sign.assetPath.contains('hoop')) {
+        newImageSize = cellDimension * 6.0;
+      } else if (sign.assetPath.contains('distractions')) {
+        if (sign.assetPath.contains('recall')) {
+          newImageSize = cellDimension * 3.0;
+        } else {
+          newImageSize = cellDimension * 1.5;
+        }
+      } else if (sign.assetPath.contains('pole')) {
+        newImageSize = cellDimension * 2.0;
+      } else if (sign.assetPath.contains('heel')) {
+        newImageSize = cellDimension * 4.5;
+      }
+    }
+
+    return newImageSize;
   }
 }

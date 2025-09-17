@@ -39,10 +39,10 @@ class GridScreen extends ConsumerWidget {
             icon: const Icon(Icons.settings),
             onPressed: () => context.push('/settings'),
           ),
-          IconButton(
-            icon: const Icon(Icons.undo),
-            onPressed: () => ref.read(historyProvider.notifier).undo(),
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.undo),
+          //   onPressed: () => ref.read(historyProvider.notifier).undo(),
+          // ),
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () =>

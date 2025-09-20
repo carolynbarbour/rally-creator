@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "rally-course-creator"
+  },
   "targets": {},
   "etags": {}
 }

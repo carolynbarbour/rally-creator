@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
+import 'package:myapp/saved_courses_provider.dart';
 
 class InputScreen extends ConsumerStatefulWidget {
   const InputScreen({super.key});
@@ -25,6 +26,8 @@ class _InputScreenState extends ConsumerState<InputScreen> {
   @override
   Widget build(BuildContext context) {
     final int courseLevel = ref.watch(levelProvider);
+    final savedCourses = ref.watch(savedCoursesProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Grid Dimensions')),
       body: Padding(
@@ -86,6 +89,20 @@ class _InputScreenState extends ConsumerState<InputScreen> {
                 }
               },
               child: const Text('Continue'),
+            ),
+            const SizedBox(height: 16),
+            savedCourses.when(
+              data: (courses) {
+                if (courses.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                return ElevatedButton(
+                  onPressed: () => context.go('/saved'),
+                  child: const Text('Load Previously Saved Course'),
+                );
+              },
+              loading: () => const SizedBox.shrink(),
+              error: (e, st) => const SizedBox.shrink(),
             ),
           ],
         ),

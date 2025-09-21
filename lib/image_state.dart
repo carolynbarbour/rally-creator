@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:myapp/rally_signs.dart';
 
-@immutable
+part 'image_state.g.dart';
+
+@JsonSerializable()
 class SignInfo {
   final String assetPath;
   final String number;
@@ -15,12 +19,19 @@ class SignInfo {
     required this.level,
     required this.static,
   });
+
+  factory SignInfo.fromJson(Map<String, dynamic> json) =>
+      _$SignInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$SignInfoToJson(this);
 }
 
 @immutable
+@JsonSerializable()
 class ImageState {
   final String id;
+  @JsonKey(fromJson: _signInfoFromJson, toJson: _signInfoToJson)
   final SignInfo sign;
+  @JsonKey(fromJson: _matrix4FromJson, toJson: _matrix4ToJson)
   final Matrix4 matrix;
   final double size;
 
@@ -30,6 +41,10 @@ class ImageState {
     required this.matrix,
     required this.size,
   });
+
+  factory ImageState.fromJson(Map<String, dynamic> json) =>
+      _$ImageStateFromJson(json);
+  Map<String, dynamic> toJson() => _$ImageStateToJson(this);
 
   String get assetPath => sign.assetPath;
   String get name => sign.name;
@@ -54,4 +69,21 @@ class ImageState {
       size: size ?? this.size,
     );
   }
+}
+
+Matrix4 _matrix4FromJson(List<dynamic> json) {
+  return Matrix4.fromList(json.cast<double>());
+}
+
+List<double> _matrix4ToJson(Matrix4 matrix) {
+  return matrix.storage.toList();
+}
+
+SignInfo _signInfoFromJson(Map<String, dynamic> json) {
+  final assetPath = json['assetPath'] as String;
+  return rallySigns.firstWhere((s) => s.assetPath == assetPath);
+}
+
+Map<String, dynamic> _signInfoToJson(SignInfo sign) {
+  return {'assetPath': sign.assetPath};
 }

@@ -36,6 +36,10 @@ class GridScreen extends ConsumerWidget {
         title: Text(appTitle),
         actions: [
           IconButton(
+            icon: const Icon(Icons.folder_open),
+            onPressed: () => context.push('/saved'),
+          ),
+          IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => context.push('/settings'),
           ),

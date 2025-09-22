@@ -33,7 +33,7 @@ final class SavedCoursesProvider
   SavedCourses create() => SavedCourses();
 }
 
-String _$savedCoursesHash() => r'60ed99e5c8c92991302f1165bfcf963feffd32ad';
+String _$savedCoursesHash() => r'a7ff91c19d95d3bb606e9273728beaabf8a0367a';
 
 abstract class _$SavedCourses extends $AsyncNotifier<List<String>> {
   FutureOr<List<String>> build();

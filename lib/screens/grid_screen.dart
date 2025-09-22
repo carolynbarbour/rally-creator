@@ -8,6 +8,7 @@ import 'package:myapp/widgets/image_selection_drawer.dart';
 import 'package:myapp/image_state.dart';
 import 'package:myapp/providers.dart';
 import 'package:myapp/widgets/sign_reorderable_list.dart';
+import 'package:screenshot/screenshot.dart';
 
 class GridScreen extends ConsumerWidget {
   const GridScreen({super.key});
@@ -18,6 +19,7 @@ class GridScreen extends ConsumerWidget {
     final List<ImageState> placedImages = ref.watch(placedImagesProvider);
     final String? selectedImageId = ref.watch(selectedImageIdProvider);
     final bool isReordering = ref.watch(isReorderingProvider);
+    final screenshotController = ScreenshotController();
 
     final screenSize = MediaQuery.of(context).size;
     final appBarHeight = AppBar().preferredSize.height;
@@ -49,8 +51,14 @@ class GridScreen extends ConsumerWidget {
           // ),
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () =>
-                generateAndPrintPdf(placedImages, dimensions, appTitle),
+            onPressed: () => generateAndPrintPdf(
+              placedImages,
+              dimensions,
+              appTitle,
+              screenshotController,
+              gridHeight,
+              cellDimension,
+            ),
           ),
         ],
       ),

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 import 'package:myapp/saved_courses_provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:myapp/web_actions.dart';
 
 class InputScreen extends ConsumerStatefulWidget {
   const InputScreen({super.key});
@@ -104,6 +106,25 @@ class _InputScreenState extends ConsumerState<InputScreen> {
               loading: () => const SizedBox.shrink(),
               error: (e, st) => const SizedBox.shrink(),
             ),
+            if (kIsWeb) ...[
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () async {
+                  final course = await uploadCourseFromJson();
+                  if (course != null) {
+                    ref
+                        .read(placedImagesProvider.notifier)
+                        .loadState(course.images);
+                    ref
+                        .read(gridDimensionsProvider.notifier)
+                        .setDimensions(course.dimensions);
+                    ref.read(appTitleProvider.notifier).setTitle(course.title);
+                    context.go('/grid');
+                  }
+                },
+                child: const Text('Upload Course'),
+              ),
+            ],
           ],
         ),
       ),

@@ -16,91 +16,115 @@ Future<void> generateAndPrintPdf(
 ) async {
   final pdf = pw.Document();
 
+  const double targetWidth = 1200;
+  final double targetHeight =
+      targetWidth * (PdfPageFormat.a4.height / PdfPageFormat.a4.width);
+
   final image = await screenshotController.captureFromWidget(
-    Material(
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: PrintableGrid(
-          dimensions: dimensions,
-          gridHeight: gridHeight,
-          cellDimension: cellDimension,
-          placedImages: placedImages,
+    Container(
+      width: targetWidth,
+      height: targetHeight,
+      color: Colors.white,
+      child: Material(
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: PrintableGrid(
+            dimensions: dimensions,
+            gridHeight: gridHeight,
+            cellDimension: cellDimension,
+            placedImages: placedImages,
+          ),
         ),
       ),
     ),
+    pixelRatio: 1.5,
+    targetSize: Size(targetWidth, targetHeight),
   );
 
+  // Page 1: Title and Grid
+  pdf.addPage(
+    pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      build: (pw.Context context) {
+        return pw.Column(
+          children: [
+            pw.Container(
+              padding: const pw.EdgeInsets.only(bottom: 10),
+              alignment: pw.Alignment.center,
+              child: pw.Text(
+                title,
+                style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+            pw.Expanded(
+              child: pw.FittedBox(child: pw.Image(pw.MemoryImage(image))),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+
+  // Page 2: Signs List
   pdf.addPage(
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
-        final List<pw.Widget> content = [];
-
-        // Title
-        content.add(
-          pw.Container(
-            padding: const pw.EdgeInsets.only(bottom: 10),
-            alignment: pw.Alignment.center,
-            child: pw.Text(
-              title,
-              style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
-            ),
-          ),
-        );
-
-        // Grid Image
-        content.add(pw.Image(pw.MemoryImage(image)));
-
-        content.add(pw.SizedBox(height: 10));
-        content.add(pw.Divider());
-        content.add(pw.SizedBox(height: 10));
-
-        // Signs List Header
-        content.add(
+        int count = 0;
+        return [
           pw.Text(
             'Signs:',
-            style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+            style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
           ),
-        );
-        content.add(pw.SizedBox(height: 5));
-
-        // Signs List
-        int count = 0;
-        for (final image in placedImages) {
-          if (image.isCounted) {
-            count++;
-          }
-          content.add(
-            pw.Container(
-              padding: const pw.EdgeInsets.symmetric(vertical: 1.5),
-              child: pw.Row(
-                children: [
-                  pw.Container(
-                    width: 20,
-                    child: pw.Text(
-                      image.isCounted ? '$count' : ' ',
-                      style: const pw.TextStyle(fontSize: 8),
-                    ),
+          pw.SizedBox(height: 10),
+          pw.Divider(),
+          pw.SizedBox(height: 10),
+          ...placedImages
+              .where(
+                (element) =>
+                    element.name.isNotEmpty &&
+                    !(element.assetPath.toLowerCase().contains('base') &&
+                        !(element.name.contains('Start') ||
+                            element.name.contains('Finish') ||
+                            element.name.contains('Bonus'))),
+              )
+              .map((imageState) {
+                if (imageState.isCounted) {
+                  count++;
+                }
+                return pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(vertical: 1.5),
+                  child: pw.Row(
+                    children: [
+                      pw.Container(
+                        width: 20,
+                        child: pw.Text(
+                          imageState.isCounted ? '$count' : ' ',
+                          style: const pw.TextStyle(fontSize: 8),
+                        ),
+                      ),
+                      pw.SizedBox(width: 10),
+                      pw.Expanded(
+                        child: pw.Text(
+                          imageState.name,
+                          style: const pw.TextStyle(fontSize: 8),
+                        ),
+                      ),
+                      pw.SizedBox(width: 10),
+                      pw.Text(
+                        imageState.number.isEmpty
+                            ? ''
+                            : '#${imageState.number}',
+                        style: const pw.TextStyle(fontSize: 8),
+                      ),
+                    ],
                   ),
-                  pw.SizedBox(width: 10),
-                  pw.Expanded(
-                    child: pw.Text(
-                      image.name,
-                      style: const pw.TextStyle(fontSize: 8),
-                    ),
-                  ),
-                  pw.SizedBox(width: 10),
-                  pw.Text(
-                    image.number.isEmpty ? '' : '#${image.number}',
-                    style: const pw.TextStyle(fontSize: 8),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return content;
+                );
+              }),
+        ];
       },
     ),
   );

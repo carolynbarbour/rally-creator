@@ -10,11 +10,18 @@ import 'package:myapp/providers.dart';
 import 'package:myapp/widgets/sign_reorderable_list.dart';
 import 'package:screenshot/screenshot.dart';
 
-class GridScreen extends ConsumerWidget {
+class GridScreen extends ConsumerStatefulWidget {
   const GridScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GridScreen> createState() => _GridScreenState();
+}
+
+class _GridScreenState extends ConsumerState<GridScreen> {
+  final _gridKey = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
     final Size dimensions = ref.watch(gridDimensionsProvider);
     final List<ImageState> placedImages = ref.watch(placedImagesProvider);
     final String? selectedImageId = ref.watch(selectedImageIdProvider);
@@ -22,10 +29,6 @@ class GridScreen extends ConsumerWidget {
     final screenshotController = ScreenshotController();
 
     final screenSize = MediaQuery.of(context).size;
-    final appBarHeight = AppBar().preferredSize.height;
-    final topPadding = MediaQuery.of(context).padding.top;
-    final bodyHeight = screenSize.height - appBarHeight - topPadding;
-    final center = Offset(screenSize.width / 2, bodyHeight / 2);
 
     // Calculate cell height assuming square cells based on available width
     final double cellDimension = (screenSize.width - 60) / dimensions.width;
@@ -63,7 +66,7 @@ class GridScreen extends ConsumerWidget {
         ],
       ),
       drawer: ImageSelectionDrawer(
-        center: center,
+        gridKey: _gridKey,
         cellDimension: cellDimension,
       ),
       body: Stack(
@@ -71,6 +74,7 @@ class GridScreen extends ConsumerWidget {
           CustomScrollView(
             slivers: [
               Grid(
+                key: _gridKey,
                 dimensions: dimensions,
                 gridHeight: gridHeight,
                 cellDimension: cellDimension,

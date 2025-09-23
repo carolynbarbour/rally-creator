@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/image_state.dart';
 import 'package:myapp/level_selection_provider.dart';
 import 'package:myapp/providers.dart';
 
 class ImageSelectionDrawer extends ConsumerWidget {
-  final Offset center;
-  final double cellDimension;
-
   const ImageSelectionDrawer({
     super.key,
-    required this.center,
+    required this.gridKey,
     required this.cellDimension,
   });
+
+  final GlobalKey gridKey;
+  final double cellDimension;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,6 +57,21 @@ class ImageSelectionDrawer extends ConsumerWidget {
                         ? Text('#${sign.number}')
                         : null,
                     onTap: () {
+                      final renderObject = gridKey.currentContext
+                          ?.findRenderObject();
+                      RenderBox? gridBox;
+                      if (renderObject is RenderSliverToBoxAdapter) {
+                        gridBox = renderObject.child;
+                      } else if (renderObject is RenderBox) {
+                        gridBox = renderObject;
+                      }
+
+                      final center = gridBox != null
+                          ? gridBox.localToGlobal(
+                              gridBox.size.center(Offset.zero),
+                            )
+                          : const Offset(100, 100);
+
                       var newImageSize = customScaling(cellDimension, sign);
                       ref
                           .read(placedImagesProvider.notifier)
@@ -80,6 +96,20 @@ class ImageSelectionDrawer extends ConsumerWidget {
                       title: Text(sign.name),
                       subtitle: Text('#${sign.number}'),
                       onTap: () {
+                        final renderObject = gridKey.currentContext
+                            ?.findRenderObject();
+                        RenderBox? gridBox;
+                        if (renderObject is RenderSliverToBoxAdapter) {
+                          gridBox = renderObject.child;
+                        } else if (renderObject is RenderBox) {
+                          gridBox = renderObject;
+                        }
+
+                        final center = gridBox != null
+                            ? gridBox.localToGlobal(
+                                gridBox.size.center(Offset.zero),
+                              )
+                            : const Offset(100, 100);
                         ref
                             .read(placedImagesProvider.notifier)
                             .addImage(sign, center, cellDimension);

@@ -71,11 +71,9 @@ class ImageSelectionDrawer extends ConsumerWidget {
                               gridBox.size.center(Offset.zero),
                             )
                           : const Offset(100, 100);
-
-                      var newImageSize = customScaling(cellDimension, sign);
                       ref
                           .read(placedImagesProvider.notifier)
-                          .addImage(sign, center, newImageSize);
+                          .addImage(sign, center, cellDimension);
                       Navigator.pop(context);
                     },
                   );

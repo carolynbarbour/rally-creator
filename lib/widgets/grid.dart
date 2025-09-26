@@ -161,17 +161,19 @@ class Grid extends ConsumerWidget {
                                   ),
                                   if (!isReordering && !isSpecialSign)
                                     Positioned(
-                                      top: -6,
-                                      right: -10,
-                                      child: Chip(
-                                        padding: const EdgeInsets.all(0),
-                                        backgroundColor: Colors.yellow,
-                                        label: Text(
-                                          '${displayIndex + 1}',
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
+                                      top: 0,
+                                      right: 0,
+                                      child: Transform.scale(
+                                        scale: cellDimension / 200,
+                                        child: Chip(
+                                          padding: const EdgeInsets.all(0),
+                                          backgroundColor: Colors.yellow,
+                                          label: Text(
+                                            '${displayIndex + 1}',
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),

@@ -81,6 +81,16 @@ List<double> _matrix4ToJson(Matrix4 matrix) {
 
 SignInfo _signInfoFromJson(Map<String, dynamic> json) {
   final assetPath = json['assetPath'] as String;
+
+  // Backwards compatibility for old .jpg base signs: convert .jpg base images to .png
+  if (assetPath.contains('base') &&
+      assetPath.contains('jpg') &&
+      !(assetPath.contains('start') ||
+          assetPath.contains('bonus') ||
+          assetPath.contains('finish'))) {
+    final pngAssetPath = assetPath.replaceAll('.jpg', '.png');
+    return rallySigns.firstWhere((s) => s.assetPath == pngAssetPath);
+  }
   return rallySigns.firstWhere((s) => s.assetPath == assetPath);
 }
 

@@ -18,7 +18,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: router,
-      title: 'Grid App',
+      title: 'Rally Course Creator',
       theme: ThemeData(primarySwatch: Colors.blue),
     );
   }
